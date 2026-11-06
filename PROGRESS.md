@@ -28,6 +28,7 @@
 3. **零依赖可行**：宿主只用 node 内置模块，client 手写 `window.__ModuleLoader__.load` 格式，不需要 tsdown/TS/任何 npm 包 —— 省掉了整条构建链和网络风险。
 4. **可以开独立测试 host**：`ELECTRON_RUN_AS_NODE=1 "DeepSeek Harness.exe" <asar>/.../dsh/lib/bin.js --profile studygo --port 6311 --no-open`，拿到了带 token 的 URL，可以反复重启验证而不碰用户主实例。这是后续夜间自测的主力手段。
 5. **截图两条路**：CDP 走 URL（需 token，headless 稳定）；PrintWindow 走窗口（不怕认证，但中文路径必须避开 PowerShell 的 ANSI 编码）。
+6. **测试 host 与主实例共享 `~/.dsh` 会打架**：两个 host 同时跑时，`dsh-wechat-plugin` 会争抢 `~/.dsh/wechat/state.json`（EPERM rename）。已确认文件未损坏。以后起测试 host 要么给独立的 DSH_HOME，要么用 `--patch` 把 wechat 插件关掉。
 
 ### 未验证 / 遗留
 
