@@ -61,3 +61,35 @@ node E:/DSH题库插件/plugin/scripts/shot.mjs 'http://127.0.0.1:6311/?token=<t
 
 - 未发布、未删除用户数据、未装依赖 ✅
 - 所有改动可回滚（插件在 E:\DSH题库插件\plugin，profile 只加了 1 个 bundle 名 + 1 个 junction）✅
+
+## 轮次 2（2026-11-07 00:30 – 01:20）· G1 地基
+
+### 已完成
+
+- `SPEC.md`：目录结构、库/题目 frontmatter、步骤块与追问块语法、索引 schema、迁移规则
+- `lib/store.js`：vault 读写（建库、id 分配、渲染、解析、列表、幂等）
+- `lib/index-db.js`：`node:sqlite` + FTS5；中文用二元组（bigram）入索引，解决 unicode61 不切中文的问题
+- `lib/host.js`：三个工具 + `/study/api` 只读路由（libraries / questions / question / search）
+- `lib/client.js`：三栏面板（库列表 → 题目流 → 题目详情 + 步骤 + 相关题 + 搜索）
+- `scripts/seed.mjs` / `eval.mjs` / `smoke-g1.mjs`：造数、检索评测、工具冒烟
+
+### 已验证
+
+| 验收项 | 结果 |
+|---|---|
+| 检索命中率 | **14/14 = 100%**（100 题，14 条真实查询） |
+| 工具注册 | `study_add_question` / `study_followup` / `study_search` 全部可调用 |
+| 写盘 | `数学-导数/q-20261107-0001.md`，frontmatter 与步骤块格式正确 |
+| 追问追加 | 追加到「## 追问」段，`- @S1 …` + 缩进回答，原有内容零改动 |
+| 面板三栏 | 库 2 个（示例-100题 100 / 数学-导数 1）、题目流、详情含 S1–S4、chip、相关题 |
+
+### 关键发现
+
+1. **`ctx.inject` 的写法**：`inject = ['tools']` 是必选；可选服务要用 `ctx.inject(['webServer'], cb)` 等它就绪，直接 `ctx.get('webServer')` 在 apply 阶段会是 undefined。
+2. **client 里 CSS 对象的键名会被覆盖**（`body` 用了两次导致 flex 容器失效）——写样式表要防重名。
+3. 中文检索必须自己做 bigram，否则 FTS5 只能匹配 3 字以上的查询（「最值」「导数」都会 0 命中）。
+
+### 遗留
+
+- 面板还没有「新建库 / 新建题目」入口（G2 随答题闭环一起做）
+- 示例库 `示例-100题` 是测试数据，正式用之前删掉：`rm -rf E:\DSH题库插件\vault\示例-100题` 并删 `.index\study.db`
