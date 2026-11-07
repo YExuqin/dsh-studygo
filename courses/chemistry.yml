@@ -1,0 +1,12 @@
+id: chemistry
+name: 化学
+aliases: [无机, 有机, 物化]
+form: analysis
+style: guided
+methods:
+  - { id: equation, label: 写方程式 }
+  - { id: balance, label: 配平 }
+  - { id: experiment, label: 实验操作 }
+  - { id: calculation, label: 计算 }
+  - { id: mechanism, label: 机理 }
+  - { id: other, label: 其他 }

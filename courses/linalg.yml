@@ -1,0 +1,14 @@
+id: linalg
+name: 线性代数
+aliases: [线代]
+form: proof
+style: strict
+methods:
+  - { id: row_reduce, label: 初等行变换 }
+  - { id: determinant, label: 行列式性质 }
+  - { id: rank, label: 求秩 }
+  - { id: inverse, label: 求逆 }
+  - { id: eigen, label: 特征值/特征向量 }
+  - { id: orthogonality, label: 正交化 }
+  - { id: solve_system, label: 解方程组 }
+  - { id: other, label: 其他 }

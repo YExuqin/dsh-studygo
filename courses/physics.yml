@@ -1,0 +1,14 @@
+id: physics
+name: 大学物理
+aliases: [物理, 大物]
+form: proof
+style: strict
+methods:
+  - { id: force_analysis, label: 受力分析 }
+  - { id: newton_second, label: 牛顿第二定律 }
+  - { id: momentum, label: 动量守恒 }
+  - { id: energy, label: 能量守恒 }
+  - { id: angular, label: 角动量 }
+  - { id: kinematics, label: 运动学公式 }
+  - { id: circuit_ohm, label: 欧姆定律 }
+  - { id: other, label: 其他 }

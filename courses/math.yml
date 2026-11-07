@@ -1,0 +1,15 @@
+id: math
+name: 高等数学
+aliases: [高数, 微积分]
+form: proof
+style: guided
+methods:
+  - { id: derivation, label: 求导 }
+  - { id: integration, label: 积分 }
+  - { id: substitution, label: 换元 }
+  - { id: parts, label: 分部积分 }
+  - { id: critical_point, label: 驻点 }
+  - { id: endpoint_compare, label: 端点比较 }
+  - { id: expansion, label: 展开/级数 }
+  - { id: ode, label: 微分方程 }
+  - { id: other, label: 其他 }

@@ -1,0 +1,7 @@
+id: _default
+name: 通用
+aliases: []
+form: proof
+style: guided
+methods:
+  - { id: other, label: 其他 }
