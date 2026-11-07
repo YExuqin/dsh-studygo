@@ -257,3 +257,17 @@ d { type:'image', url:'data:...;base64,...' }
 - 之前点树节点是滚到「步骤」，现在改成滚到对应的**追问条目**（thread-<anchor>-<n>），并给该条淡黄闪烁（#fffbeb，比之前的 #fff1b8 淡很多）。
 - 树节点遍历时带 path（S2-0、S2-0-1…），与题末线程列表的 id 一一对应。
 - 实测：点击 S2 节点后 `thread-S2-0` 背景为 rgb(255,251,235)，且滚动位置从 0 → 422。
+
+## 轮次 11（2026-11-08）· G4 第一部分：相关题与对比
+
+- 关系引擎 `lib/relations.js`：同套路（骨架 LCS ≥0.7）、同考点（topic 交集）、形似神不似（topic 有交集但骨架 <0.4，权重最高）
+- 接口：`GET /study/api/related`、`POST /study/api/feedback`（deny 落 `vault/.meta/links.json`）、`POST /study/api/compare`（两题对比分析）
+- 右侧栏改成相关题列表：类别 chip + 理由 + 对比 / 👍 / ✕（✕ 永久屏蔽）
+- 对比弹窗：左右两列按步骤并列，底部可提问，答案用 KaTeX 渲染
+- 生成时注入：同库检索命中的前 3 题作为「同库参考题」写进 prompt（尚未在生成结果里强制引用，下轮加强）
+- 修了两个隐蔽 bug：`parseQuestion` 没解析 frontmatter 的 method（导致关系全空）；路由里 `links` 变量作用域错误（500）
+
+### 还没做
+
+- 知识卡（每库一份、可编辑、≤30 张）
+- 讲解里强制引用相关题的那一句（现在只是把参考题喂给模型）
