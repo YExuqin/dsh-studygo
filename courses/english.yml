@@ -1,0 +1,11 @@
+id: english
+name: 英语
+aliases: [English, 大学英语]
+form: essay
+style: guided
+methods:
+  - { id: structure, label: 篇章结构 }
+  - { id: vocab, label: 词汇替换 }
+  - { id: grammar, label: 语法点 }
+  - { id: coherence, label: 衔接 }
+  - { id: other, label: 其他 }

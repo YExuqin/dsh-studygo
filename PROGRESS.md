@@ -98,3 +98,41 @@ node E:/DSH题库插件/plugin/scripts/shot.mjs 'http://127.0.0.1:6311/?token=<t
 - 用最终提交的代码重跑了一遍隔离 host：三栏正常、相关题已去重、101 题、命中率 14/14（100%）。
 - **桌面端现状**：宿主仍是昨晚加载的旧版本（工具列表里只有 `study_create_library`）。新工具与新 API 需要**重启一次 DSH** 才会注册；客户端 `client.js` 是按请求从磁盘读的，所以 Ctrl+R 就能看到新界面（但 API 会提示未就绪）。
 - 结论：G1 的代码与验收在隔离 host 上全部通过；桌面端只差一次重启。
+
+## 轮次 3（2026-11-07 12:40 – 14:0x）· G2 答题闭环
+
+### 已完成
+
+- **布局改造**：左 56px 图标条（库/新建/刷新，库列表覆盖式浮层）、三层题卡（卷面/讲解/一句话）、右辅助栏（相关题）、底部追问抽屉占位
+- **生成管线**：`study_solve` / `POST /study/api/solve` → 课程包 + 骨架 + 档位 → 结构化卡片；`/commit` 落盘
+- **课程包**：11 个内置（math/linalg/physics/chemistry/biology/english/chinese/cs/autocontrol/stem/_default），YAML 自解析，用户包覆盖内置
+- **验证**：真实题生成成功——“闭区间三次函数最值”4 步，卷面/讲解/关键式/gist 齐全，数学正确
+- **验算**：sympy 通道打通（系统 Python 3.12 + sympy 1.14），等式链逐段比较；故意错的等式能判 fail
+- **图**：T1 JSON→SVG 渲染器（框/圆/菱形、正反向边、反馈弧）；结构图测试通过
+- **存储**：frontmatter 增加 gist/form/style/course/verify；正文支持 `## 要点`、`- 讲解：`、```figure 块
+
+### 关键坑
+
+1. **`ctx.llm` 必须 inject**：`export const inject = ['tools', 'llm']`，否则 “cannot get property llm without inject”。
+2. **推理型模型吃 token**：deepseek-flash 一次作答先跑 ~1.2 万 reasoning token，maxTokens 2400/6000 都只拿到推理、没有正文。改成 12000，并在 `finish.reason === 'max-tokens'` 时自动翻倍重试一次（上限 32000）才成功。**单题成本 ≈ 1.2–2.4 万 token**，G3 要想办法降（换低推理档或缩小 prompt）。
+3. **chunk 形状**：`block-start{blockType}` → `reasoning-delta{text}` / `text-delta{text}` → `usage` → `finish{reason:{kind}}`。只认 text-delta。
+4. PowerShell 发 JSON 会把中文写成乱码（生成 `-----` 目录），改用 Node fetch 才正确 —— 测试脚本已改。
+
+### 未完成 / 已知缺口
+
+- **公式渲染**：没有 KaTeX，只有极简 LaTeX 去符号（`(a)/(b)` 形式），可读但不美观 → G3
+- **图片录入**：未做（只支持粘贴文本）→ G5
+- **追问抽屉**：只占位，不能对话 → G3
+- **essay 形态**：未做 → G5
+
+### 验收对照
+
+| 项 | 结果 |
+|---|---|
+| 布局（图标条/三层/抽屉） | ✅ |
+| 生成管线 | ✅ 真实题通过 |
+| sympy 验算 | ✅ 正确通过、错误判 fail |
+| T1 图渲染 | ✅ 结构图 |
+| 课程包 | ✅ 11 个 |
+| 录入 | ⚠️ 仅文本 |
+| 单题成本 | ⚠️ 偏高（1.2–2.4 万 token） |

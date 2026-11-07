@@ -1,0 +1,10 @@
+id: stem
+name: 工科通用
+aliases: []
+form: proof
+style: guided
+methods:
+  - { id: modeling, label: 建模 }
+  - { id: derivation, label: 推导 }
+  - { id: calculation, label: 计算 }
+  - { id: other, label: 其他 }

@@ -1,0 +1,10 @@
+id: chinese
+name: 语文
+aliases: [中文, 写作]
+form: essay
+style: guided
+methods:
+  - { id: reading, label: 阅读分析 }
+  - { id: rhetoric, label: 手法 }
+  - { id: writing, label: 作文 }
+  - { id: other, label: 其他 }

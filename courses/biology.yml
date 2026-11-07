@@ -1,0 +1,10 @@
+id: biology
+name: 生物
+aliases: [生物化学, 细胞]
+form: analysis
+style: guided
+methods:
+  - { id: mechanism, label: 机理 }
+  - { id: experiment, label: 实验分析 }
+  - { id: calculation, label: 计算 }
+  - { id: other, label: 其他 }

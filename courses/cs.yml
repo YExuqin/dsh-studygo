@@ -1,0 +1,11 @@
+id: cs
+name: 计算机
+aliases: [程序设计, 数据结构]
+form: diagram
+style: guided
+methods:
+  - { id: pseudocode, label: 伪代码 }
+  - { id: flow, label: 流程图 }
+  - { id: complexity, label: 复杂度分析 }
+  - { id: trace, label: 程序阅读 }
+  - { id: other, label: 其他 }

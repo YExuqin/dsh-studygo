@@ -1,0 +1,13 @@
+id: autocontrol
+name: 自动控制原理
+aliases: [自控, 控制工程]
+form: proof
+style: strict
+methods:
+  - { id: laplace, label: 拉氏变换 }
+  - { id: transfer_func, label: 求传递函数 }
+  - { id: block_reduce, label: 结构图等效化简 }
+  - { id: mason, label: 梅森增益公式 }
+  - { id: time_response, label: 时域响应 }
+  - { id: stability, label: 稳定性判据 }
+  - { id: other, label: 其他 }
