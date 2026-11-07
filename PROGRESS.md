@@ -155,3 +155,27 @@ d { type:'image', url:'data:...;base64,...' }
 但会明确提示「视觉通道不可用，请粘题干文字」——不假装能识别。
 
 待选方案：① 走 agent 侧 OCR（把图给会话里的模型）；② 等 provider 支持 image 模态；③ 本地 OCR（PaddleOCR/RapidOCR，重）。
+
+### 图片录入：已解决（Windows 内置 OCR）
+
+试过的路线：
+
+1. 插件直传图片给模型 → 四种 block 形状全部 `TRANSPORT` 失败（见上）；
+2. **Windows.Media.Ocr（系统自带，无需安装）→ 成功**。
+
+实现：
+
+- `scripts/ocr.ps1`：PowerShell + WinRT（`BitmapDecoder` + `OcrEngine`），语言 `zh-Hans-CN`；
+- 读图走 `InMemoryRandomAccessStream`（避开 StorageFile 的坑）；
+- **结果写 UTF-8 文件再由 Node 读**——直接读管道会被 OEM 代码页 936 打成乱码（这个坑踩过一次）；
+- 路径用 base64 传参，避开中文路径在命令行里的编码问题；
+- `POST /study/api/upload` 落盘 → `POST /study/api/ocr` 识别 → 面板自动填进输入框，用户校对后再生成。
+
+实测：一张手机截图识别出 223 字，中文可读；界面元素（按钮、广告）也会被识别进来，需人工删。
+
+### 截图
+
+- `artifacts/G2-final.png` 三层题卡 + 图
+- `artifacts/G2-figure2.png` 结构图渲染
+- `artifacts/G2-new.png` 新建弹窗（含上传图片）
+- `artifacts/ocr-sample.txt` OCR 原始输出
