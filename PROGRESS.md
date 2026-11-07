@@ -211,3 +211,18 @@ d { type:'image', url:'data:...;base64,...' }
 ### 未完成
 
 - 成本压缩还没做：单题仍 1.2–2.4 万 token（推理占大头），下一轮专门做
+
+## 轮次 6（2026-11-08）· G3 第二部分：成本压缩 + 自动判科修正
+
+### 成本
+
+- 发现 `ctx.llm.stream` 支持 `reasoningEffort`：传 none 会空返回，传 low 正常。
+- 默认给 `study_solve` / `followup` 传 `effort: 'low'`。
+- 实测同一道题：默认档 22.5s、low 档 10.6s；reasoning-delta 从约 1.2 万条降到约 3.4 千条（约 1/3）。
+- 仍需注意：不同题波动大（10–25s），并且推理 token 仍是大头，后续可考虑进一步缩短 prompt。
+
+### 自动判科修正
+
+- 关键词表补了「最大值/最小值/极大/极小/单调/连续」；实测：
+  - 求最值 → math；求矩阵的秩 → linalg；传递函数 → autocontrol；细胞膜 → biology + analysis
+- 仍判不出的（如「电网络」）回退 _default，可手动选。
