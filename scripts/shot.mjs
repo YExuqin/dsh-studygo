@@ -9,6 +9,7 @@ const out = process.argv[3]
 const W = Number(process.argv[4] || 1440)
 const H = Number(process.argv[5] || 900)
 const clicks = (process.argv[6] || '').split(',').map((s) => s.trim()).filter(Boolean)
+const scrollBottom = process.argv[7] === 'bottom'
 if (!url || !out) { console.error('usage: shot.mjs <url> <out.png> [w] [h] [clickText,...]'); process.exit(2) }
 
 const port = 9333 + Math.floor(Math.random() * 60)
@@ -60,6 +61,10 @@ for (const text of clicks) {
   await sleep(1800)
 }
 
+if (scrollBottom) {
+  await send('Runtime.evaluate', { expression: "(() => { const all=[...document.querySelectorAll('div')].filter(e=>e.scrollHeight>e.clientHeight+50); const el=all[all.length-1]; if(el) el.scrollTop=el.scrollHeight; return el?el.scrollTop:-1 })()", returnByValue: true })
+  await sleep(800)
+}
 const shotRes = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false })
 if (!shotRes.result?.data) { console.error('capture failed'); process.exit(1) }
 writeFileSync(out, Buffer.from(shotRes.result.data, 'base64'))
