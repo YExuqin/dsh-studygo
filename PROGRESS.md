@@ -136,3 +136,22 @@ node E:/DSH题库插件/plugin/scripts/shot.mjs 'http://127.0.0.1:6311/?token=<t
 | 课程包 | ✅ 11 个 |
 | 录入 | ⚠️ 仅文本 |
 | 单题成本 | ⚠️ 偏高（1.2–2.4 万 token） |
+
+### 图片录入：实测结论（阻塞）
+
+在宿主里直接调 `ctx.llm.stream` 发图片，**四种 block 形状全部失败**：
+
+```
+a { type:'image', source:{ type:'base64', mediaType, data } }
+b { type:'image', source:{ type:'base64', media_type, data } }
+c { type:'image', mimeType, data }
+d { type:'image', url:'data:...;base64,...' }
+```
+
+四次都是 `finish{reason:{kind:'error', failure:{message:'DeepSeek Messages transport failed', code:'TRANSPORT'}}}`，
+用 240×90 的小图也一样，排除尺寸问题。结论：**该 provider 路由不支持插件侧直传图片**。
+
+已落地：`POST /study/api/upload` 保存图片到 `vault/附件/<日期>/`，面板「新建」里有「上传图片」按钮，
+但会明确提示「视觉通道不可用，请粘题干文字」——不假装能识别。
+
+待选方案：① 走 agent 侧 OCR（把图给会话里的模型）；② 等 provider 支持 image 模态；③ 本地 OCR（PaddleOCR/RapidOCR，重）。
