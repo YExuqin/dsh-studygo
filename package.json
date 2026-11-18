@@ -1,6 +1,6 @@
 {
   "name": "dsh-studygo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "DSH 学习题库：结构化答题 + 步骤级追问 + 库级记忆",
   "type": "module",
   "main": "lib/index.js",
@@ -24,7 +24,23 @@
   },
   "files": [
     "lib",
+    "courses",
+    "vendor",
+    "scripts/ocr.ps1",
     "cordis.patch.yml",
-    "README.md"
-  ]
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "dsh",
+    "plugin",
+    "study",
+    "question-bank",
+    "spaced-repetition",
+    "math"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
 }

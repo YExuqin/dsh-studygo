@@ -348,3 +348,19 @@ d { type:'image', url:'data:...;base64,...' }
 - 每条加「↑并入上一条」，处理跨页/跨栏的同一道题。
 - 「本批统一库」下拉：默认按各题自动归库，可整批指定一个库。
 - 一次最多 20 张（`MAX_IMAGES`），超出截断并提示。
+## 轮次 19（2026-11-18）· 发布前收尾（1–3 步）+ 队列持久化
+
+**发布阻塞项已修：**
+
+- `package.json` 的 `files` 补上 `courses/`、`vendor/`、`scripts/ocr.ps1`（此前 npm 打包后运行时读不到课程包和 KaTeX）。
+- 默认 vault 从写死的 `E:\DSH题库插件\vault` 改为 `~/.dsh/study-vault`，并支持 `config.vault` 与 `DSH_STUDY_VAULT`。
+- 旧数据已复制到新默认路径（原目录保留作备份），实测三个库 9 道题都在。
+- 补 `LICENSE`(MIT)、`engines`、`keywords`、`license`，版本 0.0.1 → 0.1.0。
+- README 重写（原版还是 G0 验证版），加 `docs/` 三张截图。
+- 清理 46 个调试脚本，只留 `shot.mjs` / `verify.py` / `ocr.ps1`。
+
+**顺带完成：**
+
+- 批量导入队列持久化：`.meta/queue.json`，刷新后自动恢复（实测播种一行 → 刷新 → 仍在，无 console 错误）。
+
+**校验方式：** 模拟 npm pack 打包清单（91 个文件 / 1.48MB，无缺失）；启动宿主后 `/libraries` 返回三个库。
