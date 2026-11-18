@@ -459,3 +459,12 @@ d { type:'image', url:'data:...;base64,...' }
 - 数学公式的 OCR 依然不可用：同一张图识别成「I.已知当支0时，2过2sin支，则为（D)6」，符号全丢。
 - 试过 4 倍放大 + 二值化，结果更差（更乱）。Windows OCR 对公式无能为力。
 - 结论：数学题请走「粘贴文字」；图片导入适用于中文/英文排版清楚的题目。
+## 轮次 27（2026-11-18）· 结论：当前接不了视觉模型
+
+- 实测 DSH → DeepSeek 适配层**不支持图片内容**：
+  - `input_text` 形状 → `UNSUPPORTED_CONTENT: DeepSeek Messages cannot represent user/tool-result content input_text`
+  - `imageUrl` / Anthropic 形状 → `TRANSPORT: DeepSeek Messages transport failed`
+- 四种常见的图片消息形状（text+imageUrl、input_image、image_url、anthropic source/base64）全部失败。
+- 当前环境只配置了 `deepseek-account` 一个 provider，没有可切换的视觉线路。
+- 所以「数学题拍照识别」在现有集成下无法用视觉模型，只能本地 OCR（对公式无效）。
+- 结论：数学题走粘贴文字；英语/文科图片 OCR 可用。等 DSH 适配层支持图片后再接。
