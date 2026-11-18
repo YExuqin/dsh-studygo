@@ -517,3 +517,9 @@ d { type:'image', url:'data:...;base64,...' }
 - 根因：标题是纯文本节点（`h("div", ..., s.title)`），只有正文走了 `MathText`。
 - 修法：新增 `InlineMath` 组件（复用 `splitMath`，但输出 span 不输出 div，避免破坏标题行的 flex 布局），标题改用 `InlineMath`。
 - 覆盖：卡片步骤标题、答题预览里的标题。实测三个带公式的标题（|x|、x^-2、√(1-x²)）都正常渲染。
+## 轮次 33（2026-11-18）· 配图挂载 + 截断告警
+
+- 新增行按钮「作为配图」：把这张图**整张**挂到上一题（`figures: [{type:'image', path}]`），卡片里直接显示图片。
+- `Figure` 支持 `type: 'image'`，走 `/study/api/attachment`。
+- 转录加截断检测：模型 `finish.kind === 'max-tokens'` 时行上显示「⚠ 这一页题太多，识别可能被截断」。
+- 实测：两行 → 点「作为配图」合并成一行 → 生成 → ↗ 打开，卡片里图片正常显示，零 console 错误。
