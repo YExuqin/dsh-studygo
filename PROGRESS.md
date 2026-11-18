@@ -468,3 +468,23 @@ d { type:'image', url:'data:...;base64,...' }
 - 当前环境只配置了 `deepseek-account` 一个 provider，没有可切换的视觉线路。
 - 所以「数学题拍照识别」在现有集成下无法用视觉模型，只能本地 OCR（对公式无效）。
 - 结论：数学题走粘贴文字；英语/文科图片 OCR 可用。等 DSH 适配层支持图片后再接。
+## 轮次 28（2026-11-18）· 突破：图片直接交给模型（视觉转录）
+
+### 上一轮结论错了，纠正
+
+- 之前测试四种「data URL」图片消息形状全部失败，我据此断定适配层不支持图片——**结论是错的**。
+- 真正原因：DSH 的图片消息不是 data URL，而是**附件块**：
+  `{ type: 'image', attachment: { attachmentId, mediaType, width, height, ... } }`
+- 而且 `llm.resolveModelInfo()` 明确返回 `inputModalities: ['text','image']` —— **deepseek-flash 本来就支持读图**。
+
+### 现在的流程
+
+1. 图片写入附件存储：`ctx.get('attachments').saveImage({ data, mediaType, name })`
+2. 带 `{type:'text'}` + `{type:'image', attachment}` 调模型，让它**只转录不作答**；
+3. 转录失败才回落到 Windows OCR（行上标 `OCR` 标签区分）。
+
+### 效果（同一张数学选择题截图）
+
+- OCR：`I.已知当支0时，2过2sin支，则为（D)6` —— 全废。
+- 视觉：`1. 已知当 $x\\to 0$ 时，$2x^\\alpha \\sim 2\\sin^3 x$，则 $\\alpha$ 为（ ）` —— 完全正确，公式与选项都在。
+- 耗时约 13 秒/张，切题后正好 3 道。
