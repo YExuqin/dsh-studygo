@@ -586,3 +586,27 @@ d { type:'image', url:'data:...;base64,...' }
 - 修法：节点文字改用 `<foreignObject>` 包一个 flex div，里面用 `InlineMath` 渲染；圆节点同样处理并加 `pointerEvents: none` 保证拖拽/点击不受影响。
 - 同时放大菱形（宽度 ×1.35）让文字不贴边；圆节点阈值从 8 单位降到 6，四字中文（如「批准授予」）改画成圆角矩形避免被截断。
 - 实测：`h_i < 2 且 F > 0?`、`h_i = 1 或 F ≥ 2?` 均正确渲染。
+## 轮次 39（2026-11-21）· 发布前全量检查
+
+**静态检查**：`lib/` 下 14 个 js 全部通过 `node --check`，无 TODO/FIXME。
+
+**API 冒烟**（宿主 6313）：
+
+| 接口 | 结果 |
+| `/libraries` | PASS（6 库）|
+| `/questions?limit` | PASS（分页 + total）|
+| `/question` | PASS |
+| `/related` | PASS（5 条）|
+| `/courses` | PASS（11 包）|
+| `/knowledge` | PASS |
+| `/suggest-library` | PASS（数学-导数/auto）|
+| `/ingest/split` | PASS（真实文本 3/2/1 段）|
+| `/export` | PASS（18084 字符）|
+
+**UI 冒烟**（CDP，1440×900）：题库面板 / 库浮层 / 新建页 全部渲染，**console 零错误**。
+
+**本轮修掉**：
+
+1. `package.json` 的 `files` 漏了 `scripts/upscale.py`、`scripts/verify.py` —— npm 安装后 OCR 兜底与公式验算都会失效（共 93 文件 / 1.5MB）。
+2. `lib/verify.js` 里写死了 `C:\Users\ASUS\...\python.exe`，公开仓库不能留。
+3. README 还写着「单图上传 + Windows OCR」，与现在的「视觉模型直接读图」不符。

@@ -27,6 +27,8 @@
     "courses",
     "vendor",
     "scripts/ocr.ps1",
+    "scripts/upscale.py",
+    "scripts/verify.py",
     "cordis.patch.yml",
     "README.md",
     "LICENSE"
