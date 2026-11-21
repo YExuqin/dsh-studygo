@@ -49,5 +49,14 @@
   "scripts": {
     "test": "node --test \"test/*.test.mjs\"",
     "check": "node --check lib/index.js && node --check lib/host.js && node --check lib/client.js && node --check lib/store.js"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YExuquin/dsh-studygo.git"
+  },
+  "homepage": "https://github.com/YExuquin/dsh-studygo#readme",
+  "bugs": {
+    "url": "https://github.com/YExuquin/dsh-studygo/issues"
+  },
+  "author": "YExuquin"
 }
