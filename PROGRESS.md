@@ -619,3 +619,11 @@ d { type:'image', url:'data:...;base64,...' }
 - 单测立刻抓到一个真 bug：`detectForm('请写一篇短文投稿')` 返回 `proof` —— essay 关键词缺「短文/投稿/写一篇/词数」，已补。
 - 拆分 `lib/split.js`：切题函数从 host.js 独立出来，便于单测且减少 host 的依赖面。
 - 已知取舍：SQLite 的增删查没进单测（Windows 上 EBUSY 锁文件 + Node 22 需实验标志），只测 `grams()` 纯函数。
+## 轮次 41（2026-11-21）· PDF 导入
+
+- `scripts/pdf.py`（PyMuPDF，DSH 自带 Python 已预装）：有文本层的页直接抽文字，扫描页渲染 180dpi PNG。
+- 判定规则：页面**没有图片**且文字 ≥12 字 → 文本；否则文字 ≥40 字 → 文本；其余 → 扫描。
+- `lib/pdf.js` 负责调脚本；`POST /study/api/ingest/pdf` 把文本页交给 `splitQuestions`（**不花 token**），扫描页走视觉转录。
+- 客户端批量导入支持 `.pdf`，一页可能切出多题，行名带「第 N 页 第 M 题」。
+- 上限：40 页 / 30MB；加密 PDF 明确报错。
+- 实测 sample.pdf（2 页文本 + 1 页扫描）：6.4 秒导入 4 道题，文本页 via=pdf、扫描页 via=vision。
