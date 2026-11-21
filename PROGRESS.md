@@ -627,3 +627,15 @@ d { type:'image', url:'data:...;base64,...' }
 - 客户端批量导入支持 `.pdf`，一页可能切出多题，行名带「第 N 页 第 M 题」。
 - 上限：40 页 / 30MB；加密 PDF 明确报错。
 - 实测 sample.pdf（2 页文本 + 1 页扫描）：6.4 秒导入 4 道题，文本页 via=pdf、扫描页 via=vision。
+
+## 轮次 42（2026-11-21）· 图 T4 Mermaid / T5 Graphviz
+
+- 静态路由从只服务 vendor/katex 泛化为 vendor/<任意>，mime 表补 .mjs/.wasm/.json/.svg。
+- **T4 Mermaid**：vendor mermaid@10.9.1（3.2MB 单文件 UMD），首次用到时动态加载，securityLevel: strict 防注入。
+- **T5 Graphviz**：vendor @hpcc-js/wasm@2.36.0 的 graphviz.js（801KB，wasm 已内联，无需额外文件），动态 import() + Graphviz.load()。
+- 渲染失败时**显示源码 + 错误原因**，不吞内容。
+- 发现并处理了一个真实坑：A[label="x"] -> B 是**非法 DOT**（属性表必须独立成句），模型的输出很可能这么写。加 sanitizeDot() 自动改写：A["x"] 变 A[label="x"]、A[...] -> B 变 A[...]; A -> B。实测三种非法写法都能渲染。
+- prompt 里同步写明正确写法。
+- vendor/NOTICE.md 记录三方组件与许可（KaTeX MIT / Mermaid MIT / hpcc-js Apache-2.0）。
+- 打包体积：99 个文件 / 5.46MB（vendor 占 5MB）。
+- 实测：一屏内 Mermaid 流程图与 Graphviz 有向图同时正确渲染。
