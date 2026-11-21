@@ -44,5 +44,9 @@
   ],
   "engines": {
     "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "node --check lib/index.js && node --check lib/host.js && node --check lib/client.js && node --check lib/store.js"
   }
 }

@@ -610,3 +610,12 @@ d { type:'image', url:'data:...;base64,...' }
 1. `package.json` 的 `files` 漏了 `scripts/upscale.py`、`scripts/verify.py` —— npm 安装后 OCR 兜底与公式验算都会失效（共 93 文件 / 1.5MB）。
 2. `lib/verify.js` 里写死了 `C:\Users\ASUS\...\python.exe`，公开仓库不能留。
 3. README 还写着「单图上传 + Windows OCR」，与现在的「视觉模型直接读图」不符。
+## 轮次 40（2026-11-21）· 单测 + CI + 两个告警
+
+- **追问树节点公式**：SVG `<text>` 改 `foreignObject` + `InlineMath`（与流程图同一做法）。
+- **表格单元格公式**：`FigureTable` 的 `td/th` 改用 `InlineMath`，实测 `$f(x)=x^2$` 表头正常渲染。
+- **单测**（`node --test`，不引第三方框架）：20 个用例，覆盖 splitter / relations / store（frontmatter、题目往返、essay 段落、知识卡、addQuestion）/ courses（判科、判形态）/ docx（用真实 docx fixture）/ index-db（grams）。
+- **CI**：`.github/workflows/ci.yml`，Node 22 与 24 双版本跑语法检查 + 单测 + `npm pack --dry-run`。
+- 单测立刻抓到一个真 bug：`detectForm('请写一篇短文投稿')` 返回 `proof` —— essay 关键词缺「短文/投稿/写一篇/词数」，已补。
+- 拆分 `lib/split.js`：切题函数从 host.js 独立出来，便于单测且减少 host 的依赖面。
+- 已知取舍：SQLite 的增删查没进单测（Windows 上 EBUSY 锁文件 + Node 22 需实验标志），只测 `grams()` 纯函数。
